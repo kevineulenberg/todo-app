@@ -1,0 +1,20 @@
+---
+import TodoList from '../components/TodoList.astro';
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Modern Todo App</title>
+		<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+	</head>
+	<body class="bg-gray-100 min-h-screen">
+		<main class="container mx-auto px-4 py-8 max-w-2xl">
+			<h1 class="text-4xl font-bold text-center mb-8 text-gray-800">Modern Todo App</h1>
+			<TodoList />
+		</main>
+	</body>
+</html>

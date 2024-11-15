@@ -1,0 +1,206 @@
+---
+---
+
+<div class="bg-white rounded-lg shadow-md p-6">
+    <form id="todo-form" class="mb-6">
+        <div class="flex gap-2">
+            <button
+                type="button"
+                id="emoji-btn"
+                class="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+            >
+                😀
+            </button>
+            <input
+                type="text"
+                id="todo-input"
+                placeholder="Add a new todo..."
+                class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                required
+            />
+            <button
+                type="submit"
+                class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+            >
+                Add
+            </button>
+        </div>
+    </form>
+
+    <ul id="todo-list" class="space-y-2"></ul>
+</div>
+
+<!-- Emoji picker container -->
+<div id="emoji-picker" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-lg shadow-xl z-50">
+    <div class="grid grid-cols-8 gap-2 max-h-60 overflow-y-auto">
+        <!-- Emojis will be populated here -->
+    </div>
+</div>
+
+<script>
+import Sortable from 'sortablejs';
+
+interface Todo {
+    id: string;
+    text: string;
+    completed: boolean;
+    emoji: string;
+}
+
+// Common emojis for tasks
+const commonEmojis = [
+    "📝", "📌", "🎯", "⭐", "📅", "🎨", "📚", "💻", "🏃", "🎵",
+    "🛒", "📞", "✉️", "🎁", "🔧", "🏠", "🌟", "⚡", "🔍", "📷",
+    "🎮", "🍽️", "💪", "🎉", "📊", "🎭", "✈️", "🎸", "🏆", "💡",
+    "🔔", "🎬", "📱", "🌈", "🎨", "🔑", "💼", "🎓", "🌱", "⚙️"
+];
+
+// Load todos from localStorage
+let todos: Todo[] = JSON.parse(localStorage.getItem('todos') || '[]');
+let selectedEmoji = "📝"; // Default emoji
+
+// DOM elements
+const todoForm = document.getElementById('todo-form') as HTMLFormElement;
+const todoInput = document.getElementById('todo-input') as HTMLInputElement;
+const todoList = document.getElementById('todo-list') as HTMLUListElement;
+const emojiBtn = document.getElementById('emoji-btn') as HTMLButtonElement;
+const emojiPicker = document.getElementById('emoji-picker') as HTMLDivElement;
+
+// Initialize Sortable
+document.addEventListener('DOMContentLoaded', () => {
+    if (todoList) {
+        new Sortable(todoList, {
+            animation: 150,
+            onEnd: () => {
+                // Update todos array based on new order
+                const items = todoList.querySelectorAll('li');
+                const newTodos: Todo[] = [];
+                items.forEach(item => {
+                    const id = item.getAttribute('data-id');
+                    const todo = todos.find(t => t.id === id);
+                    if (todo) newTodos.push(todo);
+                });
+                todos = newTodos;
+                saveTodos();
+            }
+        });
+    }
+});
+
+// Setup emoji picker
+const setupEmojiPicker = () => {
+    const container = emojiPicker.querySelector('div');
+    if (container) {
+        container.innerHTML = commonEmojis.map(emoji => `
+            <button class="text-2xl p-2 hover:bg-gray-100 rounded" data-emoji="${emoji}">
+                ${emoji}
+            </button>
+        `).join('');
+    }
+};
+
+// Save todos to localStorage
+const saveTodos = () => {
+    localStorage.setItem('todos', JSON.stringify(todos));
+};
+
+// Render todos
+const renderTodos = () => {
+    todoList.innerHTML = '';
+    todos.forEach(todo => {
+        const li = document.createElement('li');
+        li.setAttribute('data-id', todo.id);
+        li.className = 'flex items-center gap-2 p-3 bg-gray-50 rounded-lg cursor-move';
+        li.innerHTML = `
+            <div class="text-xl mr-2">${todo.emoji}</div>
+            <input type="checkbox" ${todo.completed ? 'checked' : ''} 
+                class="w-5 h-5 cursor-pointer accent-blue-500"
+                data-id="${todo.id}"
+            />
+            <span class="${todo.completed ? 'line-through text-gray-500' : ''} flex-1">
+                ${todo.text}
+            </span>
+            <button
+                class="delete-btn text-red-500 hover:text-red-700 transition-colors"
+                data-id="${todo.id}"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        `;
+        todoList.appendChild(li);
+    });
+};
+
+// Toggle emoji picker
+emojiBtn.addEventListener('click', () => {
+    emojiPicker.classList.toggle('hidden');
+});
+
+// Close emoji picker when clicking outside
+document.addEventListener('click', (e) => {
+    if (!emojiBtn.contains(e.target as Node) && 
+        !emojiPicker.contains(e.target as Node)) {
+        emojiPicker.classList.add('hidden');
+    }
+});
+
+// Handle emoji selection
+emojiPicker.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (target.hasAttribute('data-emoji')) {
+        selectedEmoji = target.getAttribute('data-emoji') || "📝";
+        emojiBtn.textContent = selectedEmoji;
+        emojiPicker.classList.add('hidden');
+    }
+});
+
+// Add todo
+todoForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = todoInput.value.trim();
+    if (text) {
+        const newTodo: Todo = {
+            id: Date.now().toString(),
+            text,
+            completed: false,
+            emoji: selectedEmoji
+        };
+        todos.push(newTodo);
+        saveTodos();
+        renderTodos();
+        todoInput.value = '';
+    }
+});
+
+// Toggle todo completion
+todoList.addEventListener('change', (e) => {
+    const target = e.target as HTMLInputElement;
+    if (target.type === 'checkbox') {
+        const id = target.dataset.id;
+        const todo = todos.find(t => t.id === id);
+        if (todo) {
+            todo.completed = target.checked;
+            saveTodos();
+            renderTodos();
+        }
+    }
+});
+
+// Delete todo
+todoList.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const deleteBtn = target.closest('.delete-btn');
+    if (deleteBtn) {
+        const id = deleteBtn.getAttribute('data-id');
+        todos = todos.filter(todo => todo.id !== id);
+        saveTodos();
+        renderTodos();
+    }
+});
+
+// Initialize
+setupEmojiPicker();
+renderTodos();
+</script>
