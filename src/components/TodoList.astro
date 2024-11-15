@@ -2,14 +2,15 @@
 ---
 
 <div class="max-w-[95%] w-full mx-auto sm:max-w-lg bg-white rounded-lg shadow-md p-4 sm:p-6">
+    <h1 class="text-2xl font-bold mb-6 text-center">Einkaufsliste</h1>
     <form id="todo-form" class="mb-6">
-        <div class="flex flex-col sm:flex-row gap-2">
+        <div class="flex gap-2">
             <button
                 type="button"
                 id="emoji-btn"
-                class="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors w-12 sm:w-auto"
+                class="px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors w-12"
             >
-                😀
+                🥕
             </button>
             <input
                 type="text"
@@ -47,17 +48,18 @@ interface Todo {
     emoji: string;
 }
 
-// Common emojis for tasks
+// Food, fruits and vegetables emojis
 const commonEmojis = [
-    "📝", "📌", "🎯", "⭐", "📅", "🎨", "📚", "💻", "🏃", "🎵",
-    "🛒", "📞", "✉️", "🎁", "🔧", "🏠", "🌟", "⚡", "🔍", "📷",
-    "🎮", "🍽️", "💪", "🎉", "📊", "🎭", "✈️", "🎸", "🏆", "💡",
-    "🔔", "🎬", "📱", "🌈", "🎨", "🔑", "💼", "🎓", "🌱", "⚙️"
+    "🥕", "🥦", "🥬", "🥒", "🍅", "🌶️", "🫑", "🥔",
+    "🧅", "🧄", "🍆", "🥑", "🥝", "🍎", "🍐", "🍊",
+    "🍋", "🍌", "🍉", "🍇", "🫐", "🍓", "🍑", "🍒",
+    "🥜", "🌰", "🍞", "🥐", "🥖", "🥨", "🥯", "🥞",
+    "🧀", "🥚", "🥩", "🥓", "🥪", "🌮", "🌯", "🥗"
 ];
 
 // Load todos from localStorage
 let todos: Todo[] = JSON.parse(localStorage.getItem('todos') || '[]');
-let selectedEmoji = "📝"; // Default emoji
+let selectedEmoji = "🥕"; // Default emoji
 
 // DOM elements
 const todoForm = document.getElementById('todo-form') as HTMLFormElement;
@@ -150,7 +152,7 @@ document.addEventListener('click', (e) => {
 emojiPicker.addEventListener('click', (e) => {
     const target = e.target as HTMLElement;
     if (target.hasAttribute('data-emoji')) {
-        selectedEmoji = target.getAttribute('data-emoji') || "📝";
+        selectedEmoji = target.getAttribute('data-emoji') || "🥕";
         emojiBtn.textContent = selectedEmoji;
         emojiPicker.classList.add('hidden');
     }
