@@ -1,13 +1,13 @@
 ---
 ---
 
-<div class="bg-white rounded-lg shadow-md p-6">
+<div class="max-w-[95%] w-full mx-auto sm:max-w-lg bg-white rounded-lg shadow-md p-4 sm:p-6">
     <form id="todo-form" class="mb-6">
-        <div class="flex gap-2">
+        <div class="flex flex-col sm:flex-row gap-2">
             <button
                 type="button"
                 id="emoji-btn"
-                class="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                class="px-4 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors w-12 sm:w-auto"
             >
                 😀
             </button>
@@ -31,8 +31,8 @@
 </div>
 
 <!-- Emoji picker container -->
-<div id="emoji-picker" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-lg shadow-xl z-50">
-    <div class="grid grid-cols-8 gap-2 max-h-60 overflow-y-auto">
+<div id="emoji-picker" class="hidden fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-2 sm:p-4 rounded-lg shadow-xl z-50 w-[90%] sm:w-auto max-w-sm">
+    <div class="grid grid-cols-6 sm:grid-cols-8 gap-1 sm:gap-2 max-h-[60vh] overflow-y-auto">
         <!-- Emojis will be populated here -->
     </div>
 </div>
@@ -110,18 +110,18 @@ const renderTodos = () => {
     todos.forEach(todo => {
         const li = document.createElement('li');
         li.setAttribute('data-id', todo.id);
-        li.className = 'flex items-center gap-2 p-3 bg-gray-50 rounded-lg cursor-move';
+        li.className = 'flex items-center gap-2 p-2 sm:p-3 bg-gray-50 rounded-lg cursor-move break-words';
         li.innerHTML = `
-            <div class="text-xl mr-2">${todo.emoji}</div>
+            <div class="text-xl mr-2 flex-shrink-0">${todo.emoji}</div>
             <input type="checkbox" ${todo.completed ? 'checked' : ''} 
-                class="w-5 h-5 cursor-pointer accent-blue-500"
+                class="w-5 h-5 cursor-pointer accent-blue-500 flex-shrink-0"
                 data-id="${todo.id}"
             />
-            <span class="${todo.completed ? 'line-through text-gray-500' : ''} flex-1">
+            <span class="${todo.completed ? 'line-through text-gray-500' : ''} flex-1 min-w-0 break-words">
                 ${todo.text}
             </span>
             <button
-                class="delete-btn text-red-500 hover:text-red-700 transition-colors"
+                class="delete-btn text-red-500 hover:text-red-700 transition-colors flex-shrink-0 ml-2"
                 data-id="${todo.id}"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
