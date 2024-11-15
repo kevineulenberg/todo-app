@@ -4,24 +4,26 @@
 <div class="max-w-[95%] w-full mx-auto sm:max-w-lg bg-white rounded-lg shadow-md p-4 sm:p-6">
     <h1 class="text-2xl font-bold mb-6 text-center">Einkaufsliste</h1>
     <form id="todo-form" class="mb-6">
-        <div class="flex gap-2">
-            <button
-                type="button"
-                id="emoji-btn"
-                class="px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors w-12"
-            >
-                🥕
-            </button>
-            <input
-                type="text"
-                id="todo-input"
-                placeholder="Add a new todo..."
-                class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
-                required
-            />
+        <div class="flex flex-col gap-2 sm:flex-row">
+            <div class="flex gap-2 order-2 sm:order-1">
+                <button
+                    type="button"
+                    id="emoji-btn"
+                    class="px-3 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors w-12 flex-shrink-0"
+                >
+                    🥕
+                </button>
+                <input
+                    type="text"
+                    id="todo-input"
+                    placeholder="Add a new todo..."
+                    class="flex-1 min-w-0 px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500"
+                    required
+                />
+            </div>
             <button
                 type="submit"
-                class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                class="w-full sm:w-auto px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors order-1 sm:order-2"
             >
                 Add
             </button>
